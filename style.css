@@ -49,8 +49,10 @@
 
 .btn-close-custom {
     position: absolute;
-    top: -30px !important;
-    right: -40px !important;
+    top: -25px !important;
+    right: 20px !important;
+    background: #03a30b00;
+    opacity: 1!important;
 
 }
 
@@ -208,6 +210,28 @@ button:focus {
     }
   }
 
+  .btn-close-custom:focus {
+    outline: none!important;
+    border: none!important;
+}
+
+.btn-close-custom:hover {
+    outline: none!important;
+    border: none!important;
+}
+.btn-close{
+    border: none!important;
+    width: 0px!important;
+    height: 0px!important;
+    background: #03a30b00!important;
+
+}
+.btn-close:focus {
+    border: none!important;
+}
+.btn-close:hover{
+    border: none!important;
+}
   /*  */
 
 
@@ -215,8 +239,33 @@ button:focus {
   @media only screen and (max-width: 600px) {
     .modalmain {
         max-width: 100% !important;
+        margin-top: 20px!important;
+     
+    }
+    .btn-close-custom>img {
+        width: 52px;
+        height: 52px;
+    
+    }
+    .btn-close-custom:focus, :hover{
+        outline: none!important;
+        border: none!important;
+    }
+    .btn-close-custom {
+        background: rgba(248, 248, 248, 0);
+        color: white;
+        position: absolute;
+        /* top: -10px !important;
+        right: -10px !important; */
+        z-index: 20000;
+        /* top: 20px !important;
+        right:20px !important; */
+        top: 10px !important;
+        right: 30px !important;
+    
     }
     #modalbody {
+    
         padding: 10px 5px !important;
     }
     .title{
