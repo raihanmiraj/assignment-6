@@ -202,11 +202,11 @@ const getDetailsSingle = (e) => {
                 });
             } else {
                 renderPricing = `<div class="btn-single-pricing basic ">
-    <span class="text-truncate">0</span>
-      <span class="plan">Free of Cost</span>
+    <span class="text-truncate">Free of Cost</span>
+      <span class="plan">Basic</span>
           </div><div class="btn-single-pricing pro ">
-    <span class="text-truncate">0</span>
-        <span class="plan">Free of Cost</span>
+    <span class="text-truncate">Free of Cost</span>
+        <span class="plan">Pro</span>
             </div>`
                 renderPricing += `<div class="btn-single-pricing contact ">
     <span class="text-truncate">Contact us</span>
