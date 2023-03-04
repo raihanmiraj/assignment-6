@@ -1,13 +1,55 @@
+let sortByDateValue = false;
+const dateFormatter = (date) => {
+
+    let dateObj = new Date(date);
+    let formattedDate = dateObj.toLocaleDateString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric'
+    });
+    return formattedDate;
+}
 
 fetch("https://openapi.programming-hero.com/api/ai/tools")
     .then((response) => response.json())
     .then((data) => {
         let datafromsource = data.data.tools;
         renderCard(datafromsource, false);
+        console.log(sortByDateValue)
         document.getElementById("spinner-container").classList.toggle("hide");
+
     });
 
+const sortByDate = () => {
+    if (document.getElementById("show-more-container").classList.contains("hide")) {
+        document.getElementById("show-more-container").classList.remove("hide");
+    }
+
+    document.getElementById("spinner-container").classList.toggle("hide");
+    document.getElementById("card-list").innerHTML = '';
+    sortByDateValue = true;
+    fetch("https://openapi.programming-hero.com/api/ai/tools")
+        .then((response) => response.json())
+        .then((data) => {
+            let datafromsource = data.data.tools;
+            datafromsource.sort((a, b) => {
+                var c = new Date(a.published_in);
+                var d = new Date(b.published_in);
+                return c - d;
+            })
+
+            renderCard(datafromsource, false);
+            document.getElementById("spinner-container").classList.toggle("hide");
+        });
+
+
+
+
+}
+
+
 const renderCard = (data, seemore) => {
+
     data.forEach((item, index) => {
         console.log(index)
         if (!seemore) {
@@ -27,15 +69,34 @@ const renderCard = (data, seemore) => {
 }
 
 const seeMore = () => {
-    document.getElementById("show-more-container").remove();
-    document.getElementById("spinner-container-seemore").classList.toggle("hide");
-    fetch("https://openapi.programming-hero.com/api/ai/tools")
-        .then((response) => response.json())
-        .then((data) => {
-            let datafromsource = data.data.tools;
-            renderCard(datafromsource, true);
-        });
-    document.getElementById("spinner-container-seemore").classList.toggle("hide");
+    document.getElementById("show-more-container").classList.toggle("hide");
+    if (sortByDateValue) {
+
+        document.getElementById("spinner-container-seemore").classList.toggle("hide");
+        fetch("https://openapi.programming-hero.com/api/ai/tools")
+            .then((response) => response.json())
+            .then((data) => {
+                let datafromsource = data.data.tools;
+                datafromsource.sort((a, b) => {
+                    var c = new Date(a.published_in);
+                    var d = new Date(b.published_in);
+                    return c - d;
+                })
+                renderCard(datafromsource, true);
+            });
+        document.getElementById("spinner-container-seemore").classList.toggle("hide");
+    } else {
+
+        document.getElementById("spinner-container-seemore").classList.toggle("hide");
+        fetch("https://openapi.programming-hero.com/api/ai/tools")
+            .then((response) => response.json())
+            .then((data) => {
+                let datafromsource = data.data.tools;
+                renderCard(datafromsource, true);
+            });
+        document.getElementById("spinner-container-seemore").classList.toggle("hide");
+    }
+
 }
 
 const appendNewCard = (data) => {
@@ -68,7 +129,7 @@ const appendNewCard = (data) => {
         <div class="title-and-date">
             <h3>${name}</h3>
              <img src="date.png" alt="">
-             <span>${published_in}</span>
+             <span>${dateFormatter(published_in)}</span>
         </div>
         <div class="card-footer-layer"> <button id="${id}" onclick="getDetailsSingle(this)" class="btn"  data-bs-toggle="modal" data-bs-target="#exampleModal"> <img src="arrow.png" alt=""></button></div>
        
@@ -112,71 +173,71 @@ const getDetailsSingle = (e) => {
             var div = document.createElement("div");
 
             let renderPricing = '';
-let accuracyRender = '';
-if(accuracy!=null){
-    accuracyRender+=`<span id="badge" class="badge text-bg-danger">${accuracy*100 +'% accuracy'}</span>`
-}
+            let accuracyRender = '';
+            if (accuracy != null) {
+                accuracyRender += `<span id="badge" class="badge text-bg-danger">${accuracy * 100 + '% accuracy'}</span>`
+            }
 
-if(pricing!=null){
-    pricing.forEach((item, index) => {
-        if(index==0){
-            renderPricing +=  `<div class="btn-single-pricing basic ">
+            if (pricing != null) {
+                pricing.forEach((item, index) => {
+                    if (index == 0) {
+                        renderPricing += `<div class="btn-single-pricing basic ">
             <span class="text-truncate">${item.price}</span>
               <span class="plan">${item.plan}</span>
                   </div>`;
-        }
-        if(index==1){
-            renderPricing +=  ` <div class="btn-single-pricing pro ">
+                    }
+                    if (index == 1) {
+                        renderPricing += ` <div class="btn-single-pricing pro ">
             <span class="text-truncate">${item.price}</span>
                 <span class="plan">${item.plan}</span>
                     </div>`;
-        }
-        if(index==2){
-            renderPricing +=  `<div class="btn-single-pricing contact ">
+                    }
+                    if (index == 2) {
+                        renderPricing += `<div class="btn-single-pricing contact ">
             <span class="text-truncate">${item.price}</span>
                 <span class="plan">${item.plan}</span>
            </div>`;
-        }
-     
-        });
-}else{
-    renderPricing =`<div class="btn-single-pricing basic ">
+                    }
+
+                });
+            } else {
+                renderPricing = `<div class="btn-single-pricing basic ">
     <span class="text-truncate">0</span>
       <span class="plan">Free of Cost</span>
           </div><div class="btn-single-pricing pro ">
     <span class="text-truncate">0</span>
         <span class="plan">Free of Cost</span>
             </div>`
-    renderPricing +=  `<div class="btn-single-pricing contact ">
+                renderPricing += `<div class="btn-single-pricing contact ">
     <span class="text-truncate">Contact us</span>
         <span class="plan">Enterprise</span>
    </div>`;
-}
-          
-let featureRender = '';
+            }
 
-if(features==null){
-    featureRender="Nothing to show"
-}else{
-    Object.keys(features).forEach(key => {
-    
-        featureRender += `<li class="text-wrap">${features[key].feature_name}</li>`;
-      });
-}
-let integrationRender = '';
-if(integrations==null){
-    integrationRender="Nothing to show"
-}else{
-    integrations.forEach((item, index) => {
-        integrationRender += `<li class="text-wrap">${item}</li>`;
-    });
-}
-   
-   
-   
+            let featureRender = '';
 
-   
-  
+            if (features == null) {
+                featureRender = "Nothing to show"
+            } else {
+                Object.keys(features).forEach(key => {
+
+                    featureRender += `<li class="text-wrap">${features[key].feature_name}</li>`;
+                });
+            }
+            let integrationRender = '';
+            if (integrations == null) {
+                integrationRender = "Nothing to show"
+            } else {
+                integrations.forEach((item, index) => {
+                    integrationRender += `<li class="text-wrap">${item}</li>`;
+                });
+            }
+
+
+
+
+
+
 
             div.setAttribute("class", "container");
             div.innerHTML = ` <div class="row">
@@ -201,8 +262,7 @@ if(integrations==null){
          <div class="modal-details-footer">
              <h1>Integrations</h1>
              <ul>
-             ${featureRender}
-            //   ${integrations}
+             ${integrations}
              </ul>
          </div>
      </div>
@@ -217,15 +277,15 @@ if(integrations==null){
              </div>
           
              <div class="card-body">
-                 <h1>${input_output_examples==null?"No not yet!":input_output_examples[0].input}</h1>
-               <p class="card-text">${input_output_examples==null?"No not yet!":input_output_examples[0].output}</p>
+                 <h1>${input_output_examples == null ? "No not yet!" : input_output_examples[0].input}</h1>
+               <p class="card-text">${input_output_examples == null ? "No not yet!" : input_output_examples[0].output}</p>
              </div>
            </div>
      </div>
    </div>  `;
-   document.getElementById("modalbodycontent").innerHTML = "";
-   document.getElementById("spinner-container-modal").classList.toggle("hide");
-   document.getElementById("modalbodycontent").append(div);
+            document.getElementById("modalbodycontent").innerHTML = "";
+            document.getElementById("spinner-container-modal").classList.toggle("hide");
+            document.getElementById("modalbodycontent").append(div);
         });
 
 }
